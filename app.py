@@ -11,9 +11,18 @@ DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1361851340933959902/8nES
 def handle_webhook():
     data = request.json
 
-    message = "🎫 Places disponibles !\n"
-    if 'message' in data:
-        message += data['message']
+    # Format joli du message
+    message = "🎫 Places détectées !\n\n"
+    if isinstance(data, dict):
+        if 'event' in data: message += f"🎤 Événement : {data['event']}\n"
+        if 'date' in data: message += f"📅 Date : {data['date']}\n"
+        if 'price' in data: message += f"💶 Prix : {data['price']}\n"
+        if 'places' in data: message += f"🎟️ Places : {data['places']}\n"
+
+        # S'il y a des champs en plus
+        for k, v in data.items():
+            if k not in ['event', 'date', 'price', 'places']:
+                message += f"🔸 {k} : {v}\n"
     else:
         message += str(data)
 
